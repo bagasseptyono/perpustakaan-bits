@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id           Int       @id @default(autoincrement())
+  name         String    @db.VarChar(255)
+  email        String    @unique
+  password     String    @db.VarChar(255)
+  role         String    @default("member")
+  phone_number String?   @db.VarChar(20)
+  address      String?   @db.Text
+  photo        String?   @db.VarChar(255)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime? @updatedAt
+
+  member       members?
+}
+
+model books {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  author      String    @db.VarChar(255)
+  publisher   String    @db.VarChar(255)
+  category    String    @db.VarChar(255)
+  description String?   @db.Text
+  ISBN        String    @unique
+  stock       Int       @db.UnsignedInt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  book_assets book_assets[]
+}
+
+model book_assets {
+  id         Int       @id @default(autoincrement())
+  book_id    Int
+  path       String    @db.VarChar(255)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  book books @relation(fields: [book_id], references: [id], onDelete: Cascade)
+}
+
+model members {
+  id                      Int       @id @default(autoincrement())
+  user_id                 Int       @unique
+  membership_number       String    @unique       
+  membership_start_date   DateTime  @db.Date
+  membership_expiry_date  DateTime? @db.Date
+  created_at              DateTime  @default(now())
+  updated_at              DateTime? @updatedAt
+
+  user                    users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
