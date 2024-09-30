@@ -26,6 +26,7 @@ model users {
   updated_at   DateTime? @updatedAt
 
   member       members?
+  transactions transactions[]
 }
 
 model books {
@@ -41,6 +42,7 @@ model books {
   updated_at  DateTime? @updatedAt
 
   book_assets book_assets[]
+  transactions transactions[]
 }
 
 model book_assets {
@@ -63,4 +65,18 @@ model members {
   updated_at              DateTime? @updatedAt
 
   user                    users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model transactions {
+  id            Int       @id @default(autoincrement())
+  book_id       Int
+  user_id       Int
+  borrow_date   DateTime  @default(now())
+  return_date   DateTime?
+  return_status Boolean   @default(false)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime? @updatedAt
+
+  book        books     @relation(fields: [book_id], references: [id], onDelete: Cascade)
+  user        users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

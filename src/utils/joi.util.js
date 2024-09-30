@@ -63,6 +63,15 @@ class JoiUtil {
         ISBN: Joi.string(), 
         stock: Joi.number().integer().min(0),
     })
+
+    static borrowBook = Joi.object({
+        book_id: Joi.number().integer().required(),
+        user_id: Joi.number().integer().required(),
+    })
+
+    static returnBook = Joi.object({
+        transaction_id: Joi.number().integer().required(),
+    })
 }
 
 module.exports = JoiUtil;
