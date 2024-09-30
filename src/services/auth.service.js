@@ -4,6 +4,8 @@ const ErrHandler = require("../utils/error.util");
 const jwt = require("jsonwebtoken");
 const { JWTSECRET } = require("../config/app.config");
 const JWTUtil = require("../utils/jwt.util");
+const MembershipUtil = require("../utils/membership.util");
+const MemberRepository = require("../repositories/member.repository");
 
 class AuthService {
     static async createUser (payload, role) {
@@ -22,6 +24,30 @@ class AuthService {
         if (!createUser) {
             throw new ErrHandler(500 ,'Error When add user')
         }
+
+        const membershipNumber = await MembershipUtil.generateMembershipNumber(
+            createUser.id
+        );
+        const membershipStartDate = payload.membership_start_date
+            ? new Date(payload.membership_start_date)
+            : new Date();
+        let membershipExpiryDate;
+        if (payload.membership_expiry_date) {
+            membershipExpiryDate = new Date(payload.membership_expiry_date);
+        } else {
+            membershipExpiryDate = new Date(membershipStartDate.getTime());
+            membershipExpiryDate.setFullYear(membershipStartDate.getFullYear() + 5);
+        }
+
+        const member = {
+            user_id: createUser.id,
+            membership_number: membershipNumber,
+            membership_start_date: membershipStartDate,
+            membership_expiry_date: membershipExpiryDate,
+        };
+
+        const createMember = await MemberRepository.addMember(member);
+        if (!createMember) throw new ErrHandler(500, "Error When add Member");
 
         return {
             name : createUser.name,
