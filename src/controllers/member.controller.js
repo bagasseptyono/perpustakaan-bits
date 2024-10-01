@@ -3,7 +3,8 @@ const MemberService = require("../services/member.service");
 class MemberController {
     static async getAllMember(req, res, next){
         try {
-            const members = await MemberService.getAllMember();
+            const filters = req.query;
+            const members = await MemberService.getAllMember(filters);
             const updatedMembers = members.map(member => {
                 if (member.photo) {
                     member.photo = `${req.protocol}://${req.get('host')}/public/images/members/${member.photo}`;

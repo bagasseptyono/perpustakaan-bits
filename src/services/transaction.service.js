@@ -34,8 +34,8 @@ class TransactionService {
 
     }
 
-    static async reportBorrowBook(){
-        const reports = await TransactionRepository.reportBorrowBook();
+    static async reportBorrowBook(filters){
+        const reports = await TransactionRepository.reportBorrowBook(filters);
         const filteredTransactions = reports.map(transaction => {
             return {
                 id: transaction.id,
@@ -67,8 +67,8 @@ class TransactionService {
         return filteredTransactions;
     }
 
-    static async reportReturnBook(){
-        const reports = await TransactionRepository.reportReturnBook();
+    static async reportReturnBook(filters){
+        const reports = await TransactionRepository.reportReturnBook(filters);
         const filteredTransactions = reports.map(transaction => {
             return {
                 id: transaction.id,

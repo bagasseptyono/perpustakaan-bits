@@ -18,8 +18,15 @@ class BookRepository {
         });
     }
 
-    static async findAllBooks() {
+    static async findAllBooks(filters) {
+        const whereClause = {
+            ...(filters.title && { title: { contains: filters.title } }), 
+            ...(filters.author && { author: { contains: filters.author } }), 
+            ...(filters.category && { category: { contains: filters.category } }), 
+            ...(filters.ISBN && { ISBN: { equals: filters.ISBN } }), 
+        };
         return await prisma.books.findMany({
+            where: whereClause,
             include: {
                 book_assets: true,
             },

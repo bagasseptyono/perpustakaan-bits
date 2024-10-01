@@ -18,15 +18,25 @@ class UserRepository {
             },
             include: {
                 member: true,
+                transactions: true
             },
         });
     }
 
-    static async findAllMembers() {
+    static async findAllMembers(filters) {
+        const whereClause = {
+            ...(filters.name && { name: { contains: filters.name } }), 
+            ...(filters.email && { email: { contains: filters.email } }), 
+            ...(filters.phone_number && { phone_number: { contains: filters.phone_number } }), 
+            role: "member",
+            member: {
+                ...(filters.membership_number && { membership_number: { equals: filters.membership_number } }), 
+                ...(filters.membership_start_date && { membership_start_date: { gte: new Date(filters.membership_start_date) } }), 
+                ...(filters.membership_expiry_date && { membership_expiry_date: { lte: new Date(filters.membership_expiry_date) } }), 
+            }
+        };
         return await prisma.users.findMany({
-            where: {
-                role: "member",
-            },
+            where: whereClause,
             include: {
                 member: true,
             },

@@ -61,8 +61,8 @@ class MemberService {
 
         return userData;
     }
-    static async getAllMember() {
-        const users = await UserRepository.findAllMembers();
+    static async getAllMember(filters) {
+        const users = await UserRepository.findAllMembers(filters);
         const sanitizedUsers = users.map((user) => {
             const { password, created_at, updated_at, ...userData } = user;
             return userData;

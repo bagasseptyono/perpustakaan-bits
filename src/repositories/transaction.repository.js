@@ -48,11 +48,15 @@ class TransactionRepository {
         });
     }
 
-    static async reportBorrowBook(){
+    static async reportBorrowBook(filters){
+        const whereClause = {
+            ...(filters.book_id && { book_id: { contains: filters.book_id } }), 
+            ...(filters.user_id && { user_id: { contains: filters.user_id } }), 
+            ...(filters.borrow_date && { borrow_date: { gte: new Date(filters.borrow_date) } }), 
+            return_status: false,
+        };
         return await prisma.transactions.findMany({
-            where: {
-                return_status: false
-            },
+            where: whereClause,
             include:{
                 book: true,
                 user: true,
@@ -60,11 +64,15 @@ class TransactionRepository {
         })
     }
 
-    static async reportReturnBook(){
+    static async reportReturnBook(filters){
+        const whereClause = {
+            ...(filters.book_id && { book_id: { contains: filters.book_id } }), 
+            ...(filters.user_id && { user_id: { contains: filters.user_id } }), 
+            ...(filters.return_date && { return_date: { gte: new Date(filters.return_date) } }), 
+            return_status: false,
+        };
         return await prisma.transactions.findMany({
-            where: {
-                return_status: true,
-            }, 
+            where: whereClause, 
             include:{
                 book: true,
                 user: true,

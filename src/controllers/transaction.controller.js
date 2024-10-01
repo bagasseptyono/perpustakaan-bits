@@ -33,7 +33,8 @@ class TransactionController {
 
     static async reportBorrowBook(req,res,next){
         try {
-            const transactions = await TransactionService.reportBorrowBook();
+            const filters = req.query;
+            const transactions = await TransactionService.reportBorrowBook(filters);
             res.status(200).json({
                 success: true,
                 statusCode: 200,
@@ -47,7 +48,8 @@ class TransactionController {
 
     static async reportReturnBook(req,res,next){
         try {
-            const transactions = await TransactionService.reportReturnBook();
+            const filters = req.query;
+            const transactions = await TransactionService.reportReturnBook(filters);
             res.status(200).json({
                 success: true,
                 statusCode: 200,

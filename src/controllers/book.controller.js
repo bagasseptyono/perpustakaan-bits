@@ -19,7 +19,8 @@ class BookController {
 
     static async getAllBooks(req, res, next){
         try {
-            const books = await BookService.getAllBooks();
+            const filters = req.query;
+            const books = await BookService.getAllBooks(filters);
             const sanitizedBooks = books.map(book => {
                 const { created_at, updated_at, book_assets, ...bookData } = book;
                 const formattedBooks = book_assets.map(asset => ({

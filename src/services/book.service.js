@@ -8,8 +8,9 @@ class BookService {
         return book;
     }
 
-    static async getAllBooks() {
-        const books = await BookRepository.findAllBooks();
+    static async getAllBooks(filters) {
+        
+        const books = await BookRepository.findAllBooks(filters);
         return books;
     }
 
